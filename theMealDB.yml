@@ -1,0 +1,513 @@
+openapi: 3.0.3
+info:
+  title: TheMealDB API
+  version: "1.0.0"
+  description: |
+    OpenAPI spec for TheMealDB (themealdb.com) JSON API.
+
+    Base URL pattern:
+      https://www.themealdb.com/api/json/v1/{apiKey}
+
+    Notes:
+      - Use the test API key "1" for development/learning.
+      - Some endpoints are Premium-only (Patreon). When called with the free key, they may return
+        a "Only For Patreon supporters" payload instead of the normal meals array.
+
+servers:
+  - url: https://www.themealdb.com/api/json/v1/{apiKey}
+    description: TheMealDB JSON API (v1)
+    variables:
+      apiKey:
+        default: "1"
+        description: |
+          API key in the path. Use "1" for the free test key during development.
+          Patreon supporters receive a production key.
+
+tags:
+  - name: Meals
+    description: Search, lookup, and random meal endpoints
+  - name: Filters
+    description: Filter meals by ingredient, category, or area
+  - name: Lists
+    description: List categories/areas/ingredients usable for filtering
+  - name: Categories
+    description: Category metadata
+
+paths:
+  /search.php:
+    get:
+      tags: [Meals]
+      operationId: searchMeals
+      summary: Search meals by name or first letter
+      description: |
+        Search meal by name (`s`) or list all meals by first letter (`f`).
+
+        At least one of `s` or `f` should be provided.
+      parameters:
+        - name: s
+          in: query
+          required: false
+          description: Meal name to search for (e.g., "Arrabiata")
+          schema:
+            type: string
+            example: Arrabiata
+        - name: f
+          in: query
+          required: false
+          description: First letter to search by (single character, e.g., "a")
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 1
+            example: a
+      responses:
+        "200":
+          description: A list of meals (or null if no matches)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealArrayResponse"
+              examples:
+                found:
+                  summary: Example response (match found)
+                  value:
+                    meals:
+                      - idMeal: "52771"
+                        strMeal: "Spicy Arrabiata Penne"
+                        strMealAlternate: null
+                        strCategory: "Vegetarian"
+                        strArea: "Italian"
+                        strInstructions: "Bring a large pot of water to a boil..."
+                        strMealThumb: "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg"
+                        strTags: "Pasta,Curry"
+                        strYoutube: "https://www.youtube.com/watch?v=1IszT_guI08"
+                        strIngredient1: "penne rigate"
+                        strMeasure1: "1 pound"
+                notFound:
+                  summary: Example response (no matches)
+                  value:
+                    meals: null
+
+  /lookup.php:
+    get:
+      tags: [Meals]
+      operationId: lookupMealById
+      summary: Lookup full meal details by ID
+      parameters:
+        - name: i
+          in: query
+          required: true
+          description: Meal ID (e.g., 52772)
+          schema:
+            type: string
+            pattern: "^[0-9]+$"
+            example: "52772"
+      responses:
+        "200":
+          description: A list containing the matching meal (or null if not found)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealArrayResponse"
+
+  /random.php:
+    get:
+      tags: [Meals]
+      operationId: randomMeal
+      summary: Lookup a single random meal
+      responses:
+        "200":
+          description: A list containing a single random meal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealArrayResponse"
+
+  /randomselection.php:
+    get:
+      tags: [Meals]
+      operationId: randomSelection
+      summary: Lookup a selection of 10 random meals (Premium)
+      description: |
+        Premium-only endpoint. With the free test key, this may return a "Patreon supporters only" payload.
+      x-premium: true
+      responses:
+        "200":
+          description: Either a list of meals (premium) or a premium-required message
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/MealArrayResponse"
+                  - $ref: "#/components/schemas/PremiumOnlyResponse"
+
+  /latest.php:
+    get:
+      tags: [Meals]
+      operationId: latestMeals
+      summary: Latest meals (Premium)
+      description: |
+        Premium-only endpoint. With the free test key, this may return a "Patreon supporters only" payload.
+      x-premium: true
+      responses:
+        "200":
+          description: Either a list of meals (premium) or a premium-required message
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/MealArrayResponse"
+                  - $ref: "#/components/schemas/PremiumOnlyResponse"
+
+  /categories.php:
+    get:
+      tags: [Categories]
+      operationId: listMealCategories
+      summary: List all meal categories (with descriptions/thumbnails)
+      responses:
+        "200":
+          description: Category list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoriesResponse"
+
+  /list.php:
+    get:
+      tags: [Lists]
+      operationId: listReferenceData
+      summary: List all Categories, Areas, or Ingredients (for filtering)
+      description: |
+        Returns reference lists for filtering. Provide exactly one of:
+          - c=list  (categories)
+          - a=list  (areas)
+          - i=list  (ingredients)
+      parameters:
+        - name: c
+          in: query
+          required: false
+          description: Use "list" to return category names
+          schema:
+            type: string
+            enum: ["list"]
+        - name: a
+          in: query
+          required: false
+          description: Use "list" to return area names
+          schema:
+            type: string
+            enum: ["list"]
+        - name: i
+          in: query
+          required: false
+          description: Use "list" to return ingredient objects
+          schema:
+            type: string
+            enum: ["list"]
+      responses:
+        "200":
+          description: One of the supported reference lists
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/CategoryListResponse"
+                  - $ref: "#/components/schemas/AreaListResponse"
+                  - $ref: "#/components/schemas/IngredientListResponse"
+
+  /filter.php:
+    get:
+      tags: [Filters]
+      operationId: filterMeals
+      summary: Filter meals by ingredient, category, or area
+      description: |
+        Returns lightweight meal summaries (id, name, thumbnail).
+        Provide at least one of:
+          - i=<ingredient> (supports underscore for spaces; premium may support comma-separated multi-ingredient)
+          - c=<category>
+          - a=<area>
+      parameters:
+        - name: i
+          in: query
+          required: false
+          description: Ingredient name (e.g., "chicken_breast"). May be comma-separated for multi-ingredient (premium).
+          schema:
+            type: string
+            example: chicken_breast
+        - name: c
+          in: query
+          required: false
+          description: Category name (e.g., "Seafood")
+          schema:
+            type: string
+            example: Seafood
+        - name: a
+          in: query
+          required: false
+          description: Area name (e.g., "Canadian")
+          schema:
+            type: string
+            example: Canadian
+      responses:
+        "200":
+          description: A list of matching meal summaries (or null if no matches)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealSummaryArrayResponse"
+
+components:
+  schemas:
+    Meal:
+      type: object
+      description: Full meal details (fields as returned by TheMealDB)
+      additionalProperties: true
+      properties:
+        idMeal:
+          type: string
+          example: "52772"
+        strMeal:
+          type: string
+          example: "Teriyaki Chicken Casserole"
+        strMealAlternate:
+          type: string
+          nullable: true
+        strCategory:
+          type: string
+          nullable: true
+        strArea:
+          type: string
+          nullable: true
+        strInstructions:
+          type: string
+          nullable: true
+        strMealThumb:
+          type: string
+          format: uri
+          nullable: true
+        strTags:
+          type: string
+          nullable: true
+          description: Comma-separated tags
+        strYoutube:
+          type: string
+          format: uri
+          nullable: true
+
+        # Ingredient and measure slots (1..20)
+        strIngredient1: { type: string, nullable: true }
+        strIngredient2: { type: string, nullable: true }
+        strIngredient3: { type: string, nullable: true }
+        strIngredient4: { type: string, nullable: true }
+        strIngredient5: { type: string, nullable: true }
+        strIngredient6: { type: string, nullable: true }
+        strIngredient7: { type: string, nullable: true }
+        strIngredient8: { type: string, nullable: true }
+        strIngredient9: { type: string, nullable: true }
+        strIngredient10: { type: string, nullable: true }
+        strIngredient11: { type: string, nullable: true }
+        strIngredient12: { type: string, nullable: true }
+        strIngredient13: { type: string, nullable: true }
+        strIngredient14: { type: string, nullable: true }
+        strIngredient15: { type: string, nullable: true }
+        strIngredient16: { type: string, nullable: true }
+        strIngredient17: { type: string, nullable: true }
+        strIngredient18: { type: string, nullable: true }
+        strIngredient19: { type: string, nullable: true }
+        strIngredient20: { type: string, nullable: true }
+
+        strMeasure1: { type: string, nullable: true }
+        strMeasure2: { type: string, nullable: true }
+        strMeasure3: { type: string, nullable: true }
+        strMeasure4: { type: string, nullable: true }
+        strMeasure5: { type: string, nullable: true }
+        strMeasure6: { type: string, nullable: true }
+        strMeasure7: { type: string, nullable: true }
+        strMeasure8: { type: string, nullable: true }
+        strMeasure9: { type: string, nullable: true }
+        strMeasure10: { type: string, nullable: true }
+        strMeasure11: { type: string, nullable: true }
+        strMeasure12: { type: string, nullable: true }
+        strMeasure13: { type: string, nullable: true }
+        strMeasure14: { type: string, nullable: true }
+        strMeasure15: { type: string, nullable: true }
+        strMeasure16: { type: string, nullable: true }
+        strMeasure17: { type: string, nullable: true }
+        strMeasure18: { type: string, nullable: true }
+        strMeasure19: { type: string, nullable: true }
+        strMeasure20: { type: string, nullable: true }
+
+        strSource:
+          type: string
+          nullable: true
+        strImageSource:
+          type: string
+          nullable: true
+        strCreativeCommonsConfirmed:
+          type: string
+          nullable: true
+        dateModified:
+          type: string
+          nullable: true
+          description: Often returned as "YYYY-MM-DD HH:MM:SS" (not strict RFC3339)
+
+    MealSummary:
+      type: object
+      description: Lightweight meal data returned by /filter.php
+      additionalProperties: false
+      properties:
+        strMeal:
+          type: string
+        strMealThumb:
+          type: string
+          format: uri
+        idMeal:
+          type: string
+      required: [idMeal, strMeal, strMealThumb]
+
+    Category:
+      type: object
+      additionalProperties: false
+      properties:
+        idCategory:
+          type: string
+        strCategory:
+          type: string
+        strCategoryThumb:
+          type: string
+          format: uri
+        strCategoryDescription:
+          type: string
+      required: [idCategory, strCategory, strCategoryThumb, strCategoryDescription]
+
+    Ingredient:
+      type: object
+      additionalProperties: false
+      properties:
+        idIngredient:
+          type: string
+        strIngredient:
+          type: string
+        strDescription:
+          type: string
+          nullable: true
+        strType:
+          type: string
+          nullable: true
+        strThumb:
+          type: string
+          format: uri
+          nullable: true
+      required: [idIngredient, strIngredient]
+
+    MealArrayResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meals:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/Meal"
+          description: Present as an array; null when no results are found.
+      required: [meals]
+
+    MealSummaryArrayResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meals:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/MealSummary"
+          description: Present as an array; null when no results are found.
+      required: [meals]
+
+    CategoriesResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+      required: [categories]
+
+    CategoryListItem:
+      type: object
+      additionalProperties: false
+      properties:
+        strCategory:
+          type: string
+      required: [strCategory]
+
+    AreaListItem:
+      type: object
+      additionalProperties: false
+      properties:
+        strArea:
+          type: string
+      required: [strArea]
+
+    CategoryListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryListItem"
+      required: [meals]
+
+    AreaListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/AreaListItem"
+      required: [meals]
+
+    IngredientListResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meals:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ingredient"
+      required: [meals]
+
+    PremiumMessageObject:
+      type: object
+      description: Premium-only message variant sometimes returned with free keys
+      additionalProperties: true
+      properties:
+        idMeal:
+          type: string
+          nullable: true
+        strMeal:
+          type: string
+          nullable: true
+        strDescription:
+          type: string
+          nullable: true
+
+    PremiumMessageMap:
+      type: object
+      description: Premium-only message variant sometimes returned as a map
+      additionalProperties:
+        type: string
+
+    PremiumOnlyResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meals:
+          description: Premium-only message payload
+          oneOf:
+            - $ref: "#/components/schemas/PremiumMessageObject"
+            - $ref: "#/components/schemas/PremiumMessageMap"
+      required: [meals]
