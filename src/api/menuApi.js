@@ -29,13 +29,13 @@ export async function fetchIngredients() {
 }
 
 export async function fetchMealsByCategories(category) {
-  const data = request(`/filter.php?c=${encodeURIComponent(category)}`);
+  const data = await request(`/filter.php?c=${encodeURIComponent(category)}`);
 
   if (!data.meals) return [];
 
   return data.meals.map((meal) => ({
     id: meal.idMeal,
-    name: meal.strMEal,
+    name: meal.strMeal,
     imageUrl: meal.strMealThumb,
   }));
 }

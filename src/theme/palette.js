@@ -2,14 +2,14 @@ export const palette = {
   mode: "light",
 
   primary: {
-    main: "#6C8E3F",
+    main: "#a5a58d",
   },
   secondary: {
     main: "#adc178",
   },
   background: {
-    default: "#eef1bd",
-    paper: "#f5f5eb",
+    default: "#f5ebe0",
+    paper: "#e3d5ca",
   },
   text: {
     primary: "#1F2A16",
