@@ -22,6 +22,15 @@ export const MuiButton = {
     },
 
     {
+      props: { variant: "selectedCategory" },
+      style: ({ theme }) => ({
+        backgroundColor: theme.palette.secondary.main,
+        borderRadius: "40px",
+        color: theme.palette.text.primary,
+      }),
+    },
+
+    {
       props: { variant: "navigation" },
       style: ({ theme }) => ({
         backgroundColor: theme.palette.background.default,

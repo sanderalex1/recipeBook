@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { fetchCategories, fetchMealsByCategories } from "../api/menuApi";
 
-const MenuContext = createContext();
+export const MenuContext = createContext();
 
 export default function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
@@ -14,6 +14,7 @@ export default function MenuProvider({ children }) {
   //fetching categories
   useEffect(() => {
     const fetchCategoriesData = async () => {
+      setError(null);
       setLoading((prev) => ({ ...prev, categories: true }));
       try {
         const fetchedCategories = await fetchCategories();
@@ -32,9 +33,9 @@ export default function MenuProvider({ children }) {
   useEffect(() => {
     const fetchMealsData = async () => {
       if (!selectedCategory) {
-        return console.log("No selected category");
+        return;
       }
-
+      setError(null);
       setLoading((prev) => ({ ...prev, meals: true }));
       try {
         const fetchedMeals = await fetchMealsByCategories(selectedCategory);
@@ -60,6 +61,7 @@ export default function MenuProvider({ children }) {
   };
 
   const reloadMeals = async () => {
+    setError(null);
     setLoading((prev) => ({ ...prev, meals: true }));
     try {
       const fetchedMeals = await fetchMealsByCategories(selectedCategory);
@@ -76,13 +78,4 @@ export default function MenuProvider({ children }) {
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
-}
-
-export function useMenu() {
-  const context = useContext(MenuContext);
-
-  if (!context) {
-    throw new Error("useMenu must be used inside a MenuProvider");
-  }
-  return context;
 }
