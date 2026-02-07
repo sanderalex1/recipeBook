@@ -2,7 +2,7 @@ export const palette = {
   mode: "light",
 
   primary: {
-    main: "#a5a58d",
+    main: "#ccd5ae",
   },
   secondary: {
     main: "#adc178",

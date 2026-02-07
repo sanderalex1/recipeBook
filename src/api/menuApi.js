@@ -39,3 +39,15 @@ export async function fetchMealsByCategories(category) {
     imageUrl: meal.strMealThumb,
   }));
 }
+
+export async function fetchMealById(id) {
+  const data = await request(`/lookup.php?i=${id}`);
+  // returns: { meals: [{ idIngredient, strIngredient, ...}, ...] }
+  return data.meals.map((meal) => ({
+    id: meal.idMeal,
+    name: meal.strMeal,
+    origin: meal.strArea,
+    description: meal.strInstructions,
+    picture: meal.strMealThumb,
+  }));
+}

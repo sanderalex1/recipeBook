@@ -1,5 +1,9 @@
 import { createContext, useEffect, useState } from "react";
-import { fetchCategories, fetchMealsByCategories } from "../api/menuApi";
+import {
+  fetchCategories,
+  fetchMealsByCategories,
+  fetchAreas,
+} from "../api/menuApi";
 
 export const MenuContext = createContext();
 
@@ -7,6 +11,7 @@ export default function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState();
   const [meals, setMeals] = useState([]);
+  const [areas, setAreas] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState({ categories: false, meals: false });
   const [error, setError] = useState(null);
@@ -48,6 +53,19 @@ export default function MenuProvider({ children }) {
     fetchMealsData();
   }, [selectedCategory]);
 
+  //fetching areas
+  useEffect(() => {
+    const fetchAllAreas = async () => {
+      try {
+        const fetchedAreas = await fetchAreas();
+        setAreas(fetchedAreas);
+      } catch (e) {
+        setError(e);
+      }
+    };
+    fetchAllAreas();
+  }, []);
+
   const selectCategory = (categoryName) => {
     setSelectedCategory(categoryName);
   };
@@ -73,7 +91,15 @@ export default function MenuProvider({ children }) {
   };
 
   const value = {
-    state: { categories, selectedCategory, meals, searchQuery, loading, error },
+    state: {
+      categories,
+      selectedCategory,
+      meals,
+      searchQuery,
+      loading,
+      error,
+      areas,
+    },
     actions: { selectCategory, handleSearch, clearSearch, reloadMeals },
   };
 
