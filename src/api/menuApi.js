@@ -22,10 +22,15 @@ export async function fetchAreas() {
   return data.meals.map((x) => x.strArea);
 }
 
-export async function fetchIngredients() {
-  const data = await request("/list.php?i=list");
-  // returns: { meals: [{ idIngredient, strIngredient, ...}, ...] }
-  return data.meals;
+export async function fetchMealsByIngredients(Ingredient) {
+  const data = await request(`/filter.php?i=${encodeURIComponent(Ingredient)}`);
+  if (!data.meals) return [];
+
+  return data.meals.map((meal) => ({
+    id: meal.idMeal,
+    name: meal.strMeal,
+    imageUrl: meal.strMealThumb,
+  }));
 }
 
 export async function fetchMealsByCategories(category) {
@@ -42,18 +47,6 @@ export async function fetchMealsByCategories(category) {
 
 export async function fetchMealById(id) {
   const data = await request(`/lookup.php?i=${id}`);
-  // returns: { meals: [{ idIngredient, strIngredient, ...}, ...] }
-  return data.meals.map((meal) => ({
-    id: meal.idMeal,
-    name: meal.strMeal,
-    origin: meal.strArea,
-    description: meal.strInstructions,
-    imageUrl: meal.strMealThumb,
-  }));
-}
-
-export async function fetchMealsByIngredients(ingredient) {
-  const data = await request(`/search.php?f=${ingredient}`);
   // returns: { meals: [{ idIngredient, strIngredient, ...}, ...] }
   return data.meals.map((meal) => ({
     id: meal.idMeal,

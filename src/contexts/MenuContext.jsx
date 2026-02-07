@@ -12,6 +12,7 @@ export default function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState();
   const [meals, setMeals] = useState([]);
+  const [allMeals, setAllMeals] = useState([]);
   const [areas, setAreas] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState({ categories: false, meals: false });
@@ -46,6 +47,7 @@ export default function MenuProvider({ children }) {
       try {
         const fetchedMeals = await fetchMealsByCategories(selectedCategory);
         setMeals(fetchedMeals);
+        setAllMeals(fetchedMeals);
       } catch (e) {
         setError(e);
       }
@@ -74,27 +76,13 @@ export default function MenuProvider({ children }) {
   const handleSearch = async (text) => {
     setSearchQuery(text);
 
-    if (!text.trim().toLowerCase()) {
-      reloadMeals();
+    if (!text.trim()) {
+      setMeals(allMeals);
       return;
     }
 
-    setLoading((prev) => ({ ...prev, meals: true }));
-    setError(null);
-
-    try {
-      const searchedMeals = await fetchMealsByIngredients(
-        text.trim().toLowerCase(),
-      );
-      setMeals(searchedMeals);
-    } catch (e) {
-      setError(e);
-    }
-    setLoading((prev) => ({ ...prev, meals: false }));
-  };
-
-  const clearSearch = () => {
-    setSearchQuery("");
+    const searched = await fetchMealsByIngredients(text);
+    setMeals(searched);
   };
 
   const reloadMeals = async () => {
@@ -119,7 +107,7 @@ export default function MenuProvider({ children }) {
       error,
       areas,
     },
-    actions: { selectCategory, handleSearch, clearSearch, reloadMeals },
+    actions: { selectCategory, handleSearch, reloadMeals },
   };
 
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
