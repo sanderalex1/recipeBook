@@ -3,6 +3,7 @@ import {
   fetchCategories,
   fetchMealsByCategories,
   fetchAreas,
+  fetchMealsByIngredients,
 } from "../api/menuApi";
 
 export const MenuContext = createContext();
@@ -70,8 +71,26 @@ export default function MenuProvider({ children }) {
     setSelectedCategory(categoryName);
   };
 
-  const handleSearch = (text) => {
+  const handleSearch = async (text) => {
     setSearchQuery(text);
+
+    if (!text.trim().toLowerCase()) {
+      reloadMeals();
+      return;
+    }
+
+    setLoading((prev) => ({ ...prev, meals: true }));
+    setError(null);
+
+    try {
+      const searchedMeals = await fetchMealsByIngredients(
+        text.trim().toLowerCase(),
+      );
+      setMeals(searchedMeals);
+    } catch (e) {
+      setError(e);
+    }
+    setLoading((prev) => ({ ...prev, meals: false }));
   };
 
   const clearSearch = () => {

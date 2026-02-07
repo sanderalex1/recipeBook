@@ -10,6 +10,8 @@ const DishCard = ({ meal }) => {
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
+        height: 240,
+        width: 280,
         backgroundColor: theme.palette.primary.main,
         color: theme.palette.text.primary,
         borderRadius: "2rem",
@@ -17,12 +19,11 @@ const DishCard = ({ meal }) => {
     >
       <CardMedia
         component="img"
-        height="100%"
-        width="100%"
+        height={160}
         image={meal.imageUrl}
         alt={meal.name}
       />
-      <Typography variant="h4" fontWeight={700} sx={{ p: 2 }}>
+      <Typography variant="h5" fontWeight={700} sx={{ pb: 2, pl: 2 }}>
         {meal.name}
       </Typography>
     </Card>

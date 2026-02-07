@@ -6,9 +6,13 @@ const DishList = () => {
   const { state } = useMenu();
 
   return (
-    <Grid container spacing={4} columns={10}>
+    <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={4}>
       {state.meals.map((meal) => (
-        <Grid key={meal.id} size={3}>
+        <Grid
+          key={meal.id}
+          size={{ xs: 12, sm: 8, md: 4 }}
+          sx={{ display: "flex" }}
+        >
           <DishCard meal={meal} />
         </Grid>
       ))}

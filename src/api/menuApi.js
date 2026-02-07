@@ -48,6 +48,18 @@ export async function fetchMealById(id) {
     name: meal.strMeal,
     origin: meal.strArea,
     description: meal.strInstructions,
-    picture: meal.strMealThumb,
+    imageUrl: meal.strMealThumb,
+  }));
+}
+
+export async function fetchMealsByIngredients(ingredient) {
+  const data = await request(`/search.php?f=${ingredient}`);
+  // returns: { meals: [{ idIngredient, strIngredient, ...}, ...] }
+  return data.meals.map((meal) => ({
+    id: meal.idMeal,
+    name: meal.strMeal,
+    origin: meal.strArea,
+    description: meal.strInstructions,
+    imageUrl: meal.strMealThumb,
   }));
 }
