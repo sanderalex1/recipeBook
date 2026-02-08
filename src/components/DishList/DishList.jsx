@@ -1,19 +1,35 @@
 import { Grid } from "@mui/material";
 import DishCard from "./DishCard";
 import useMenu from "../../hooks/useMenu";
+import { useState } from "react";
 
 const DishList = () => {
   const { state } = useMenu();
+  const [openDishCard, setOpenDishCard] = useState(false);
 
+  const handleOpenDishCard = () => {
+    setOpenDishCard(true);
+  };
+  const handleCloseDishCard = () => {
+    setOpenDishCard(false);
+  };
   return (
-    <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={4}>
+    <Grid container rows={{ xs: 1, sm: 2, md: 3 }} spacing={4} columnGap={1}>
       {state.meals.map((meal) => (
         <Grid
           key={meal.id}
-          size={{ xs: 12, sm: 8, md: 4 }}
-          sx={{ display: "flex" }}
+          size={{ xs: 9, sm: 6, md: 3 }}
+          sx={{
+            display: "flex",
+            justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+            alignItems: { xs: "center", sm: "center", md: "flex-start" },
+          }}
         >
-          <DishCard meal={meal} />
+          <DishCard
+            open={handleOpenDishCard}
+            close={handleCloseDishCard}
+            meal={meal}
+          />
         </Grid>
       ))}
     </Grid>
