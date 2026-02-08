@@ -5,13 +5,13 @@ import { useState } from "react";
 
 const DishList = () => {
   const { state } = useMenu();
-  const [openDishCard, setOpenDishCard] = useState(false);
+  const [openedMealId, setOpenedMealId] = useState(false);
 
-  const handleOpenDishCard = () => {
-    setOpenDishCard(true);
+  const handleOpenDishCard = (mealId) => {
+    setOpenedMealId(mealId);
   };
   const handleCloseDishCard = () => {
-    setOpenDishCard(false);
+    setOpenedMealId(null);
   };
   return (
     <Grid container rows={{ xs: 1, sm: 2, md: 3 }} spacing={4} columnGap={1}>
@@ -26,8 +26,9 @@ const DishList = () => {
           }}
         >
           <DishCard
-            open={handleOpenDishCard}
+            open={handleOpenDishCard(meal.id)}
             close={handleCloseDishCard}
+            isOpen={openedMealId === meal.id}
             meal={meal}
           />
         </Grid>
