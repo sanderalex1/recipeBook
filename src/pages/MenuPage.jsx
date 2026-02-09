@@ -42,7 +42,7 @@ const MenuPage = () => {
               display: "flex",
               flexDirection: "column",
               gap: 1,
-              alignItems: { xs: "center", sm: "center" },
+              alignItems: { xs: "center", sm: "center", md: "start" },
             }}
           >
             <Typography variant="h6">

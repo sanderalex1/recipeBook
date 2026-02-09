@@ -4,6 +4,7 @@ import {
   fetchMealsByCategories,
   fetchAreas,
   fetchMealsByIngredients,
+  fetchMealById,
 } from "../api/menuApi";
 
 export const MenuContext = createContext();
@@ -12,10 +13,15 @@ export default function MenuProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState();
   const [meals, setMeals] = useState([]);
+  const [selectedMealId, setSelectedMealId] = useState();
   const [allMeals, setAllMeals] = useState([]);
   const [areas, setAreas] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState({ categories: false, meals: false });
+  const [loading, setLoading] = useState({
+    categories: false,
+    mealsByCategory: false,
+    mealsById: false,
+  });
   const [error, setError] = useState(null);
 
   //fetching categories
@@ -26,7 +32,9 @@ export default function MenuProvider({ children }) {
       try {
         const fetchedCategories = await fetchCategories();
         setCategories(fetchedCategories);
-        setSelectedCategory(fetchedCategories[0]);
+        if (fetchedCategories.length > 0) {
+          setSelectedCategory(fetchedCategories[0]);
+        }
       } catch (e) {
         setError(e);
       }
@@ -43,7 +51,7 @@ export default function MenuProvider({ children }) {
         return;
       }
       setError(null);
-      setLoading((prev) => ({ ...prev, meals: true }));
+      setLoading((prev) => ({ ...prev, mealsByCategory: true }));
       try {
         const fetchedMeals = await fetchMealsByCategories(selectedCategory);
         setMeals(fetchedMeals);
@@ -51,7 +59,7 @@ export default function MenuProvider({ children }) {
       } catch (e) {
         setError(e);
       }
-      setLoading((prev) => ({ ...prev, meals: false }));
+      setLoading((prev) => ({ ...prev, mealsByCategory: false }));
     };
     fetchMealsData();
   }, [selectedCategory]);

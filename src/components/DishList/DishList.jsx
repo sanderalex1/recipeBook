@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const DishList = () => {
   const { state } = useMenu();
-  const [openedMealId, setOpenedMealId] = useState(false);
+  const [openedMealId, setOpenedMealId] = useState(null);
 
   const handleOpenDishCard = (mealId) => {
     setOpenedMealId(mealId);
@@ -26,7 +26,7 @@ const DishList = () => {
           }}
         >
           <DishCard
-            open={handleOpenDishCard(meal.id)}
+            open={() => handleOpenDishCard(meal.id)}
             close={handleCloseDishCard}
             isOpen={openedMealId === meal.id}
             meal={meal}

@@ -1,6 +1,9 @@
-import { Box, Card, CardMedia } from "@mui/material";
+import { Box, Card, CardMedia, Typography } from "@mui/material";
+import useMenu from "../../hooks/useMenu";
 
 const ActiveDishCard = () => {
+  const { state } = useMenu();
+
   return (
     <Box
       sx={{ display: "flex", justifyContent: "center", alignContent: "center" }}
@@ -13,7 +16,8 @@ const ActiveDishCard = () => {
           borderRadius: "24px",
         }}
       >
-        <CardMedia component="img" height="" />
+        <CardMedia component="img" height="336px" />
+        <Typography></Typography>
       </Card>
     </Box>
   );
