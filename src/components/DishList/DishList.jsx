@@ -1,18 +1,19 @@
-import { Grid } from "@mui/material";
+import { Dialog, Grid } from "@mui/material";
 import DishCard from "./DishCard";
 import useMenu from "../../hooks/useMenu";
 import { useState } from "react";
+import DetailedDishCard from "./DetailedDishCard";
 
 const DishList = () => {
   const { state } = useMenu();
-  const [openedMealId, setOpenedMealId] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
-  const handleOpenDishCard = (mealId) => {
-    setOpenedMealId(mealId);
+  const onCardClick = (mealId) => {
+    setSelectedCard(mealId);
+    setIsOpen(true);
   };
-  const handleCloseDishCard = () => {
-    setOpenedMealId(null);
-  };
+
   return (
     <Grid container rows={{ xs: 1, sm: 2, md: 3 }} spacing={4} columnGap={1}>
       {state.meals.map((meal) => (
@@ -25,14 +26,12 @@ const DishList = () => {
             alignItems: { xs: "center", sm: "center", md: "flex-start" },
           }}
         >
-          <DishCard
-            open={() => handleOpenDishCard(meal.id)}
-            close={handleCloseDishCard}
-            isOpen={openedMealId === meal.id}
-            meal={meal}
-          />
+          <DishCard open={() => onCardClick(meal.id)} meal={meal} />
         </Grid>
       ))}
+      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        {selectedCard && <DetailedDishCard card={selectedCard} />}
+      </Dialog>
     </Grid>
   );
 };

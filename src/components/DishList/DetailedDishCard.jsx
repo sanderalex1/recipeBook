@@ -1,7 +1,7 @@
 import { Box, Card, CardMedia, Typography } from "@mui/material";
 import useMenu from "../../hooks/useMenu";
 
-const ActiveDishCard = () => {
+const DetailedDishCard = ({ selectedCard }) => {
   const { state } = useMenu();
 
   return (
@@ -23,4 +23,4 @@ const ActiveDishCard = () => {
   );
 };
 
-export default ActiveDishCard;
+export default DetailedDishCard;
