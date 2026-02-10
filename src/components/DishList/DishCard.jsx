@@ -2,7 +2,7 @@ import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { Box, Card, CardMedia, IconButton, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-const DishCard = ({ meal, open, close, isOpen }) => {
+const DishCard = ({ meal }) => {
   const theme = useTheme();
 
   return (
@@ -19,7 +19,6 @@ const DishCard = ({ meal, open, close, isOpen }) => {
         borderRadius: "1rem",
         cursor: "pointer",
       }}
-      onClick={isOpen ? close : open}
     >
       <IconButton
         sx={{

@@ -13,9 +13,10 @@ const SearchBar = () => {
         alignItems: "center",
         alignContent: "center",
         gap: 4,
-        height: "20vh",
+        height: "30%",
         backgroundColor: theme.palette.background.custom,
         color: theme.palette.text.secondary,
+        paddingY: 4,
       }}
     >
       <Typography variant="h4">What's in your fridge?</Typography>

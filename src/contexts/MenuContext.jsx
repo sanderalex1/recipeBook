@@ -17,7 +17,7 @@ export default function MenuProvider({ children }) {
   const [allMeals, setAllMeals] = useState([]);
   const [areas, setAreas] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState({
+  const [isloading, setIsLoading] = useState({
     categories: false,
     mealsByCategory: false,
     mealsById: false,
@@ -28,7 +28,7 @@ export default function MenuProvider({ children }) {
   useEffect(() => {
     const fetchCategoriesData = async () => {
       setError(null);
-      setLoading((prev) => ({ ...prev, categories: true }));
+      setIsLoading((prev) => ({ ...prev, categories: true }));
       try {
         const fetchedCategories = await fetchCategories();
         setCategories(fetchedCategories);
@@ -39,7 +39,7 @@ export default function MenuProvider({ children }) {
         setError(e);
       }
 
-      setLoading((prev) => ({ ...prev, categories: false }));
+      setIsLoading((prev) => ({ ...prev, categories: false }));
     };
     fetchCategoriesData();
   }, []);
@@ -51,7 +51,7 @@ export default function MenuProvider({ children }) {
         return;
       }
       setError(null);
-      setLoading((prev) => ({ ...prev, mealsByCategory: true }));
+      setIsLoading((prev) => ({ ...prev, mealsByCategory: true }));
       try {
         const fetchedMeals = await fetchMealsByCategories(selectedCategory);
         setMeals(fetchedMeals);
@@ -59,7 +59,7 @@ export default function MenuProvider({ children }) {
       } catch (e) {
         setError(e);
       }
-      setLoading((prev) => ({ ...prev, mealsByCategory: false }));
+      setIsLoading((prev) => ({ ...prev, mealsByCategory: false }));
     };
     fetchMealsData();
   }, [selectedCategory]);
@@ -67,12 +67,15 @@ export default function MenuProvider({ children }) {
   //fetching areas
   useEffect(() => {
     const fetchAllAreas = async () => {
+      setError(null);
+      setIsLoading((prev) => ({ ...prev, mealsByCategory: true }));
       try {
         const fetchedAreas = await fetchAreas();
         setAreas(fetchedAreas);
       } catch (e) {
         setError(e);
       }
+      setIsLoading((prev) => ({ ...prev, mealsByCategory: false }));
     };
     fetchAllAreas();
   }, []);
@@ -95,14 +98,14 @@ export default function MenuProvider({ children }) {
 
   const reloadMeals = async () => {
     setError(null);
-    setLoading((prev) => ({ ...prev, meals: true }));
+    setIsLoading((prev) => ({ ...prev, meals: true }));
     try {
       const fetchedMeals = await fetchMealsByCategories(selectedCategory);
       setMeals(fetchedMeals);
     } catch (e) {
       setError(e);
     }
-    setLoading((prev) => ({ ...prev, meals: false }));
+    setIsLoading((prev) => ({ ...prev, meals: false }));
   };
 
   const value = {
@@ -111,7 +114,7 @@ export default function MenuProvider({ children }) {
       selectedCategory,
       meals,
       searchQuery,
-      loading,
+      isloading,
       error,
       areas,
     },

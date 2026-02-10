@@ -15,6 +15,7 @@ export const palette = {
   text: {
     primary: "#1F2A16",
     secondary: "#99d98c",
+    danger: "#e01e37",
   },
   divider: "rgba(31, 42, 22, 0.12)",
 };

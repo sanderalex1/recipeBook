@@ -7,32 +7,47 @@ import DetailedDishCard from "./DetailedDishCard";
 const DishList = () => {
   const { state } = useMenu();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedMealId, setSelectedMealId] = useState(null);
 
   const onCardClick = (mealId) => {
-    setSelectedCard(mealId);
+    setSelectedMealId(mealId);
     setIsOpen(true);
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    setSelectedMealId(null); // optional, but clean
+  };
+
   return (
-    <Grid container rows={{ xs: 1, sm: 2, md: 3 }} spacing={4} columnGap={1}>
-      {state.meals.map((meal) => (
-        <Grid
-          key={meal.id}
-          size={{ xs: 9, sm: 6, md: 3 }}
-          sx={{
-            display: "flex",
-            justifyContent: { xs: "center", sm: "center", md: "flex-start" },
-            alignItems: { xs: "center", sm: "center", md: "flex-start" },
-          }}
-        >
-          <DishCard open={() => onCardClick(meal.id)} meal={meal} />
-        </Grid>
-      ))}
-      <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {selectedCard && <DetailedDishCard card={selectedCard} />}
+    <>
+      <Grid container rows={{ xs: 1, sm: 2, md: 3 }} spacing={4} columnGap={1}>
+        {state.meals.map((meal) => (
+          <Grid
+            key={meal.id}
+            size={{ xs: 9, sm: 6, md: 3 }}
+            sx={{
+              display: "flex",
+              justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+              alignItems: { xs: "center", sm: "center", md: "flex-start" },
+            }}
+            onClick={() => onCardClick(meal.id)}
+          >
+            <DishCard meal={meal} />
+          </Grid>
+        ))}
+      </Grid>
+
+      <Dialog
+        open={isOpen}
+        sx={{ borderRadius: "4rem" }}
+        PaperProps={{ sx: { borderRadius: "2rem" } }}
+      >
+        {selectedMealId && (
+          <DetailedDishCard onClose={handleClose} mealId={selectedMealId} />
+        )}
       </Dialog>
-    </Grid>
+    </>
   );
 };
 
