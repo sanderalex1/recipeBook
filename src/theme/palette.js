@@ -11,6 +11,8 @@ export const palette = {
     default: "#f5ebe0",
     paper: "#e3d5ca",
     custom: "#003566",
+    chip: "#ffd151",
+    button: "#a9c256fa",
   },
   text: {
     primary: "#1F2A16",

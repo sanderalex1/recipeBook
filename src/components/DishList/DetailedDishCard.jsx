@@ -96,14 +96,18 @@ const DetailedDishCard = ({ mealId, onClose }) => {
               sx={{
                 p: 1,
                 maxWidth: "max-content",
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: theme.palette.background.chip,
               }}
               label={meal.origin}
             />
             <Typography variant="h5" fontWeight={600}>
               {meal.name}
             </Typography>
-            <Typography variant="base1" fontWeight={400}>
+            <Typography
+              variant="base1"
+              fontWeight={400}
+              sx={{ whiteSpace: "pre-wrap" }}
+            >
               {meal.description}
             </Typography>
           </Box>
@@ -113,7 +117,7 @@ const DetailedDishCard = ({ mealId, onClose }) => {
               backgroundColor: "white",
               display: "flex",
               bottom: 0,
-              backgroundColor: "white",
+              backgroundColor: theme.palette.background.button,
               p: 1.5,
               gap: 1,
               color: theme.palette.text.primary,
