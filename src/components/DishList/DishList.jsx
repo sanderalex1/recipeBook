@@ -21,7 +21,15 @@ const DishList = () => {
 
   return (
     <>
-      <Grid container rows={{ xs: 1, sm: 2, md: 3 }} spacing={4} columnGap={1}>
+      <Grid
+        container
+        rows={{ xs: 1, sm: 2, md: 3 }}
+        spacing={4}
+        columnGap={1}
+        sx={{
+          justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+        }}
+      >
         {state.meals.map((meal) => (
           <Grid
             key={meal.id}

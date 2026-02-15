@@ -51,7 +51,7 @@ const DetailedDishCard = ({ mealId, onClose }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: "500px",
+        width: { sm: "100%", md: "500px" },
         minHeight: "667px",
         maxHeight: "716px",
       }}
@@ -79,12 +79,14 @@ const DetailedDishCard = ({ mealId, onClose }) => {
               alignSelf: "flex-end",
               cursor: "pointer",
               backgroundColor: "white",
-              m: "1rem",
+              m: { xs: "1.2rem", sm: "1rem", md: "1rem" },
               "&:hover": { backgroundColor: "white" },
             }}
             onClick={onClose}
           >
-            <CloseOutlinedIcon fontSize="medium" />
+            <CloseOutlinedIcon
+              sx={{ fontSize: { sm: "small", md: "medium" } }}
+            />
           </IconButton>
           <CardMedia component="img" src={meal.imageUrl} height="336px" />
 

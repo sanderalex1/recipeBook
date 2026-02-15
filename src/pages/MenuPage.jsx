@@ -1,7 +1,6 @@
 import { Box, Container, Typography } from "@mui/material";
 import CategoryButtons from "../components/CategoryButtons/CategoryButtons";
 import DishList from "../components/DishList/DishList";
-import SearchBar from "../components/SearchBar/SearchBar";
 import useMenu from "../hooks/useMenu";
 
 const MenuPage = () => {
@@ -9,7 +8,6 @@ const MenuPage = () => {
 
   return (
     <>
-      <SearchBar />
       <Container
         fixed
         sx={{ bgcolor: "background.default", minHeight: "100dvh", p: 2 }}

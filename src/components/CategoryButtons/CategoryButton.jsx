@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import useMenu from "../../hooks/useMenu";
 
 const CategoryButton = ({ category }) => {
-  const iconSrc = `/icons/${category.toLowerCase()}.png`;
+  const iconSrc = `${import.meta.env.BASE_URL}/icons/${category.toLowerCase()}.png`;
   const { state, actions } = useMenu();
 
   return (
