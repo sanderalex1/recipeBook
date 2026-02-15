@@ -1,4 +1,4 @@
-import { Container, Dialog, Grid } from "@mui/material";
+import { Container, Dialog, Grid, Typography } from "@mui/material";
 import { useFavoritesContext } from "../contexts/FavoritesContext";
 import DishCard from "../components/DishList/DishCard";
 import { useState } from "react";
@@ -33,6 +33,19 @@ const FavoritePage = () => {
           justifyContent: { xs: "center", sm: "center", md: "flex-start" },
         }}
       >
+        {(!favorites || favorites.length === 0) && (
+          <Typography
+            variant="h5"
+            sx={{
+              textTransform: "capitalize",
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            no favorite meals yet 😔
+          </Typography>
+        )}
         {favorites.map((meal) => (
           <Grid
             key={meal.id}
@@ -44,7 +57,7 @@ const FavoritePage = () => {
             }}
             onClick={() => onCardClick(meal.id)}
           >
-            <DishCard meal={meal} key={meal.id} />
+            <DishCard meal={meal} />
           </Grid>
         ))}
       </Grid>
