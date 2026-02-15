@@ -1,11 +1,19 @@
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { Box, Card, CardMedia, IconButton, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
+import { useFavoritesContext } from "../../contexts/FavoritesContext";
 
 const DishCard = ({ meal }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, addToFavorites, removeFromFavorites } =
+    useFavoritesContext();
   const theme = useTheme();
+  const favorite = isFavorite(meal.id);
+
+  const onFavoriteClick = (e) => {
+    e.stopPropagation();
+    if (favorite) removeFromFavorites(meal.id);
+    else addToFavorites(meal);
+  };
 
   return (
     <Card
@@ -34,15 +42,10 @@ const DishCard = ({ meal }) => {
 
           "&:hover": { backgroundColor: "rgba(0, 0, 0, .6)" },
         }}
-        onClick={(e) => {
-          e.stopPropagation(); // stops the card click
-          setIsFavorite((prev) => !prev);
-        }}
+        onClick={onFavoriteClick}
       >
-        <Favorite
-          sx={{ display: isFavorite ? "block" : "none", color: "red" }}
-        />
-        <FavoriteBorder sx={{ display: isFavorite ? "none" : "block" }} />
+        <Favorite sx={{ display: favorite ? "block" : "none", color: "red" }} />
+        <FavoriteBorder sx={{ display: favorite ? "none" : "block" }} />
       </IconButton>
       <Box maxHeight={190}>
         <CardMedia
